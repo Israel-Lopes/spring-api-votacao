@@ -5,6 +5,8 @@ import com.urna.app.api.repository.AssociadoRepository;
 import com.urna.app.api.service.in.IAssociado;
 import com.urna.app.api.service.model.Associado;
 import com.urna.app.api.web.mapper.AssociadoMapper;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,8 +21,8 @@ import java.util.Optional;
 @Service
 public class AssociadoImpl implements IAssociado {
     @Autowired(required = true)
-    AssociadoRepository repository;
-    @Override
+    private AssociadoRepository repository;
+    private static final Logger logger = LogManager.getLogger(Associado.class);
     public ResponseEntity getAssociado(HttpServletRequest request, Long id) {
         try {
             Optional<AssociadoEntity> entity = repository.findById(id);
@@ -32,7 +34,6 @@ public class AssociadoImpl implements IAssociado {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-    @Override
     public ResponseEntity<List<Associado>> getAssociadoList(HttpServletRequest request) {
         try {
             List<AssociadoEntity> entities = repository.findAll();
@@ -44,21 +45,22 @@ public class AssociadoImpl implements IAssociado {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-    @Override
     public ResponseEntity createAssociado(@RequestBody Associado model) {
         try {
-            String cpfFormatado = model.getCpf().replace(" ", "").replace("-", "");
+            String cpfFormatado = model.getCpf()
+                    .replace(" ", "")
+                    .replace("-", "")
+                    .replace(".", "");
             model.setCpf(cpfFormatado);
             AssociadoEntity entity = repository.save(AssociadoMapper.marshall(model));
             return entity != null
                     ? ResponseEntity.ok().header("Content-Type", "application/json")
-                        .body(AssociadoMapper.unmarshall(entity))
+                    .body(AssociadoMapper.unmarshall(entity))
                     : ResponseEntity.notFound().build();
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-    @Override
     public ResponseEntity updateAssociado(Associado model) {
         try {
             Optional<AssociadoEntity> optionalEntity = repository.findById(model.getId());
@@ -76,7 +78,6 @@ public class AssociadoImpl implements IAssociado {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-    @Override
     public ResponseEntity deleteAssociado(Long id) {
         try {
             return repository.findById(id).map(record -> {

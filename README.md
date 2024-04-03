@@ -2,40 +2,17 @@
 
 Para inicar aplicação via docker basta seguir os passos abaixo:
 
-1. Executar build: ``sudo docker build -t nome-da-imagem .``
+1. Executar build: ``sudo docker build -t <nome-da-imagem> .``
 2. Iniciar o container: ``sudo docker run -p 8080:8080 -p 9090:9090 <nome-da-imagem>``
-
-
-
-
-Identificador da instância de banco de dados: database-1
-
-nome do usuario: admin
-
-password: adminadmin
-
-port: 3306
-
-## Liberar acesso ao Mysql
-
-Primeiro acessamos o banco pelo cloudshell ou aws cli:
-
-``mysql -h database-2.c0qrixqdzilp.us-east-1.rds.amazonaws.com -P 3306 -u admin -p``
-
-Agora conceder acessos ao usuario:
-
-``GRANT CREATE ON *.* TO 'admin'@'%';
-``
-
 
 Segue abaixo a sequencia correta:
 
-1. criar associado
-2. Criar pauta
-3. Criar sessao
-4. iniciar votacao
-5. associado votar
+![sequencia](documents/diagrama_sequencia1.png)
 
+1. criar associado
+2. Criar sessao/pauta
+3. iniciar votacao
+4. associado votar
 
 
 ## Rotas
@@ -67,13 +44,16 @@ curl -X POST -H "Content-Type: application/json" -d '{
 ```
 O campo ``tempoDaVotacao`` possui valor **default** de 1 minuto caso nao seja inserido tempo nele.
 
-``GET`` Lista as sessoes de voto
+``GET`` Lista as sessoes
 ```shell
-curl -X POST -H "Content-Type: application/json" -d '{
-  "cpf": "74525561785",
-  "voto": true,
-  "idSessao": 8
-}' http://localhost:8080/votacao/8
+curl -X GET -H "Content-Type: application/json" -d '{
+}' http://localhost:8080/sessao
+```
+
+``GET`` Lista as sessoes por id
+```shell
+curl -X GET -H "Content-Type: application/json" -d '{
+}' http://localhost:8080/sessao/{id}
 ```
 
 ``PATCH`` Inicia sessao de voto
@@ -125,6 +105,12 @@ saida:
   "cpf": "74525561785",
   "id": 10
 }
+```
+
+```Deltando associado```
+```shell
+curl -X DELETE -H "Content-Type: application/json" -d '{
+}' http://localhost:8080/associado/2
 ```
 
 2. Criando a sessao de votacao

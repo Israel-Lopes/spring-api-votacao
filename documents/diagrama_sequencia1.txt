@@ -1,0 +1,11 @@
+```mermaid
+sequenceDiagram
+    usuario->>/associado: POST
+    /associado-->>usuario: Associado criado com sucesso!
+    usuario->>/sessao: POST
+    /sessao-->>usuario: Sessao de voto criada com sucesso!
+    usuario->>/sessao: PATCH
+    /sessao-->>usuario: Sessao foi ativada para votos!
+    usuario->>/votacao: POST
+    /votacao-->usuario: Voto foi conputado com sucesso
+```
