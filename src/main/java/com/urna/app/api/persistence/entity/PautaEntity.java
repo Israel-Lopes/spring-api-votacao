@@ -18,8 +18,10 @@ public class PautaEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
+
     @Column(name = "titulo", nullable = false)
     private String titulo;
+
     @Column(name = "descricao", nullable = false)
     private String descricao;
 }

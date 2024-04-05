@@ -122,7 +122,8 @@ curl -X POST -H "Content-Type: application/json" -d '{
     "pauta": {
       "titulo": "Pauta sobre direitos trabalhistas",
       "descricao": "Referente a demissões"
-    }
+    },
+    "formulario": {}
 }' http://localhost:8080/sessao
 ```
 
@@ -169,12 +170,61 @@ Saida:
 }
 ```
 
-
 4. Criando voto
 ```shell
 curl -X POST -H "Content-Type: application/json" -d '{
   "cpf": "74525561785",
   "voto": true,
   "idSessao": 8
-}' http://localhost:8080/votacao/8
+}' http://localhost:8080/votacao
+```
+
+
+
+
+
+### Fluxo correto
+
+1. Criar associado
+```shell
+curl -X POST -H "Content-Type: application/json" -d '{
+  "cpf": "98765432109"
+}' http://localhost:8080/associado
+```
+
+2. Criando a sessao de votacao/pauta
+
+```shell
+curl -X POST -H "Content-Type: application/json" -d '{
+  "tempoDaVotacao": "08:00:00",
+  "votacaoEmAndamento": false,
+  "inicioDaContagem": null,
+  "fimDaContagem": null,
+  "formulario": {
+    "votos": [],
+    "idAssociadosQueVotaram": []
+  },
+  "pauta": {
+    "titulo": "Pauta sobre vacinas",
+    "descricao": "vacinacao de bebes"
+  }
+}' http://localhost:8080/sessao
+```
+
+3. Iniciar sessao para votos
+
+```shell
+curl -X PATCH -H "Content-Type: application/json" -d '{
+  "votacaoEmAndamento": true
+}' http://localhost:8080/sessao/1
+```
+
+4. Computar voto na sessao
+
+```shell
+curl -X POST -H "Content-Type: application/json" -d '{
+  "cpf": "56957669076",
+  "voto": "SIM",
+  "idSessao": 1
+}' http://localhost:8080/votacao
 ```

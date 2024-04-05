@@ -13,9 +13,14 @@ public class VotacaoController {
     @Autowired(required=true)
     private VotacaoImpl service;
 
-    @PostMapping("/{id}")
+    @PostMapping
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public ResponseEntity createVotacao(@PathVariable Long id, @RequestBody VotoAssociado model) throws Exception {
-        return service.createVoto(id, model);
+    public ResponseEntity createVotacao(@RequestBody VotoAssociado model) throws Exception {
+        return service.createVoto(model);
     }
+//    @GetMapping("total/{id}")
+//    @ResponseStatus(HttpStatus.ACCEPTED)
+//    public ResponseEntity listaTotalVotos(@RequestBody Long idSessao) throws Exception {
+//        return service.listaTotalVotos(idSessao);
+//    }
 }

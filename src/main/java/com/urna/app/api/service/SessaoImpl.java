@@ -4,6 +4,7 @@ import com.urna.app.api.persistence.entity.SessaoEntity;
 import com.urna.app.api.repository.SessaoRepository;
 import com.urna.app.api.service.in.ISessao;
 import com.urna.app.api.service.model.Sessao;
+import com.urna.app.api.utils.Voto;
 import com.urna.app.api.web.mapper.SessaoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,7 +21,7 @@ import java.util.Optional;
 @Service
 public class SessaoImpl implements ISessao {
     @Autowired(required = true)
-    SessaoRepository repository;
+    private SessaoRepository repository;
     @Override
     public ResponseEntity getSessao(HttpServletRequest request, Long id) {
         try {
@@ -49,8 +50,15 @@ public class SessaoImpl implements ISessao {
     public ResponseEntity createSessao(Sessao model) {
         try {
             model.setVotacaoEmAndamento(false);
+
+            List<Long> idAssociados = model.getFormulario().getIdAssociadosQueVotaram();
+            List<Voto> votos = model.getFormulario().getVotos();
+            if (idAssociados == null || votos == null) {
+                return ResponseEntity.notFound().build();
+            }
+
             SessaoEntity entity = repository.save(SessaoMapper.marshall(model));
-            return entity != null
+            return entity != null && entity.getFormulario() != null
                     ? ResponseEntity.ok().header("Content-Type", "application/json")
                         .body(SessaoMapper.unmarshall(entity))
                     : ResponseEntity.notFound().build();

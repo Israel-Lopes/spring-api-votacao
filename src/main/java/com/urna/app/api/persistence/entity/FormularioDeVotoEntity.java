@@ -1,6 +1,7 @@
 package com.urna.app.api.persistence.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.urna.app.api.utils.Voto;
 import lombok.*;
 
 import javax.persistence.*;
@@ -21,8 +22,8 @@ public class FormularioDeVotoEntity {
     private Long id;
 
     @ElementCollection
-    @Column(name = "voto", nullable = true, columnDefinition = "BOOLEAN DEFAULT NULL")
-    private List<Boolean> votos;
+    @Column(name = "voto")
+    private List<Voto> votos;
 
     @ElementCollection
     @Column(name = "associado_id")

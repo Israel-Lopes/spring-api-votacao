@@ -19,7 +19,7 @@ import java.util.Optional;
 public class PautaImpl implements IPauta {
 
     @Autowired(required = true)
-    PautaRepository repository;
+    private PautaRepository repository;
     @Override
     public ResponseEntity getPauta(HttpServletRequest request, Long id) {
         try {

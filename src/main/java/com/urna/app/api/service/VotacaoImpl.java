@@ -17,22 +17,27 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @Service
 public class VotacaoImpl implements IVotacao {
     private static final String cpfValido = "ABLE_TO_VOTE";
     @Autowired(required = true)
-    AssociadoRepository associadoRepository;
+    private AssociadoRepository associadoRepository;
     @Autowired(required = true)
-    SessaoRepository sessaoRepository;
+    private SessaoRepository sessaoRepository;
     @Autowired(required=true)
     private ValidaCPFClient client;
-    @Override
-    public ResponseEntity createVoto(Long id, VotoAssociado model) {
+    public ResponseEntity createVoto(VotoAssociado model) {
         try {
-            String cpfFormatado = model.getCpf().replace(" ", "").replace("-", "");
+            String cpfFormatado = model.getCpf()
+                    .replace(" ", "")
+                    .replace("-", "")
+                    .replace(".", "");
+
             AssociadoEntity entity = associadoRepository.findByCpf(cpfFormatado);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -51,19 +56,28 @@ public class VotacaoImpl implements IVotacao {
                 return ResponseEntity.notFound().build();
             }
 
-            if (!sessaoOptional.get().getVotacaoEmAndamento()) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body("A votação para esta sessão foi encerrada.");
-            }
+//            LocalDateTime dataAtual = LocalDateTime.now();
+//            if (!sessaoOptional.get().getFimDaContagem().isBefore(dataAtual)) {
+//                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+//                        .body("A votação para esta sessão foi encerrada.");
+//            }
+
+//            List<Long> idDeAssociadosQueJaVotaram = sessaoRepository.getById(sessaoOptional
+//                    .get().getId())
+//                    .getFormulario()
+//                    .getIdAssociadosQueVotaram();
+//            Boolean associadoJaVotou = idDeAssociadosQueJaVotaram.stream()
+//                    .anyMatch(id -> id.equals(entity.getId()));
+//
+//            if (associadoJaVotou) {
+//                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+//                        .body("Voto não computado! Associado ja vou antes!");
+//            }
 
             SessaoEntity sessaoEntity = sessaoOptional.get();
 
-            FormularioDeVotoEntity formularioDeVoto = new FormularioDeVotoEntity();
-            formularioDeVoto.setIdAssociadosQueVotaram(Collections.singletonList(entity.getId()));
-            formularioDeVoto.setVotos(Collections.singletonList(model.getVoto()));
-
-            sessaoEntity.getFormulario().getVotos().addAll(formularioDeVoto.getVotos());
-            sessaoEntity.getFormulario().getIdAssociadosQueVotaram().addAll(formularioDeVoto.getIdAssociadosQueVotaram());
+            sessaoEntity.getFormulario().getVotos().add(model.getVoto());
+            sessaoEntity.getFormulario().getIdAssociadosQueVotaram().add(entity.getId());
             sessaoRepository.save(sessaoEntity);
 
             return ResponseEntity.ok().header("Content-Type", "application/json")
@@ -72,4 +86,17 @@ public class VotacaoImpl implements IVotacao {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+//    public ResponseEntity listaTotalVotos(Long idSessao) {
+//        try {
+//            Optional<SessaoEntity> sessaoOptional = sessaoRepository.findById(idSessao);
+//
+//            if (sessaoOptional.isEmpty()) {
+//                return ResponseEntity.notFound().build();
+//            }
+//            return ResponseEntity.ok().header("Content-Type", "application/json")
+//                    .body();
+//        } catch (Exception e) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+//        }
+//    }
 }
