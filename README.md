@@ -223,8 +223,15 @@ curl -X PATCH -H "Content-Type: application/json" -d '{
 
 ```shell
 curl -X POST -H "Content-Type: application/json" -d '{
-  "cpf": "56957669076",
+  "cpf": "98765432109",
   "voto": "SIM",
   "idSessao": 1
 }' http://localhost:8080/votacao
+```
+
+5. Contabilizar votos da sessao
+
+```shell
+curl -X GET -H "Content-Type: application/json" -d '{
+}' http://localhost:8080/votacao/total/1
 ```

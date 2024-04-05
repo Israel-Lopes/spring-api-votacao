@@ -1,6 +1,7 @@
 package com.urna.app.api.web.controller;
 
 import com.urna.app.api.service.VotacaoImpl;
+import com.urna.app.api.service.model.IdSessao;
 import com.urna.app.api.service.model.VotoAssociado;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,9 +19,9 @@ public class VotacaoController {
     public ResponseEntity createVotacao(@RequestBody VotoAssociado model) throws Exception {
         return service.createVoto(model);
     }
-//    @GetMapping("total/{id}")
-//    @ResponseStatus(HttpStatus.ACCEPTED)
-//    public ResponseEntity listaTotalVotos(@RequestBody Long idSessao) throws Exception {
-//        return service.listaTotalVotos(idSessao);
-//    }
+    @GetMapping("/total/{idSessao}")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public ResponseEntity listaTotalVotos(@PathVariable Long idSessao) throws Exception {
+        return service.listaTotalVotos(idSessao);
+    }
 }
