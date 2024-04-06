@@ -1,4 +1,4 @@
-package com.urna.app.api.service.model;
+package com.urna.app.api.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.urna.app.api.persistence.entity.FormularioDeVotoEntity;

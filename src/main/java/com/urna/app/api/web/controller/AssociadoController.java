@@ -1,8 +1,7 @@
 package com.urna.app.api.web.controller;
 
 import com.urna.app.api.service.AssociadoImpl;
-import com.urna.app.api.service.model.Associado;
-import lombok.RequiredArgsConstructor;
+import com.urna.app.api.service.dto.Associado;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -31,15 +30,5 @@ public class AssociadoController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public ResponseEntity createAssociado(@RequestBody Associado model) throws Exception {
         return service.createAssociado(model);
-    }
-    @PutMapping
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public ResponseEntity updateAssociado(@RequestBody Associado model) throws Exception {
-        return service.updateAssociado(model);
-    }
-    @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public ResponseEntity deleteAssociado(@PathVariable Long id) throws Exception {
-        return service.deleteAssociado(id);
     }
 }

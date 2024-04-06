@@ -3,7 +3,7 @@ package com.urna.app.api.service;
 import com.urna.app.api.persistence.entity.PautaEntity;
 import com.urna.app.api.repository.PautaRepository;
 import com.urna.app.api.service.in.IPauta;
-import com.urna.app.api.service.model.Pauta;
+import com.urna.app.api.service.dto.Pauta;
 import com.urna.app.api.web.mapper.PautaMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

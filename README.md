@@ -48,8 +48,9 @@ curl -X POST -H "Content-Type: application/json" -d '{
 
 ```shell
 curl -X PATCH -H "Content-Type: application/json" -d '{
+  "id": 1,
   "votacaoEmAndamento": true
-}' http://localhost:8080/sessao/1
+}' http://localhost:8080/sessao/
 ```
 
 4. Computar voto na sessao

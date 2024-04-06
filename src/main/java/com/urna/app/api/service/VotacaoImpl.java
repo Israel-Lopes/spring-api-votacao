@@ -3,9 +3,9 @@ package com.urna.app.api.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.urna.app.api.service.in.IVotacao;
-import com.urna.app.api.service.model.IdSessao;
-import com.urna.app.api.service.model.TotalVotos;
-import com.urna.app.api.service.model.VotoAssociado;
+import com.urna.app.api.service.dto.TotalVotos;
+import com.urna.app.api.service.dto.VotoAssociado;
+import com.urna.app.api.utils.FormatarCpf;
 import com.urna.app.api.utils.Voto;
 import com.urna.app.client.ValidaCPFClient;
 import com.urna.app.client.model.ValidaCPF;
@@ -19,7 +19,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -33,13 +32,10 @@ public class VotacaoImpl implements IVotacao {
     private SessaoRepository sessaoRepository;
     @Autowired(required=true)
     private ValidaCPFClient client;
+    private FormatarCpf formatarCpf;
     public ResponseEntity createVoto(VotoAssociado model) {
         try {
-            String cpfFormatado = model.getCpf()
-                    .replace(" ", "")
-                    .replace("-", "")
-                    .replace(".", "");
-
+            String cpfFormatado = formatarCpf.replace(model.getCpf());
             AssociadoEntity entity = associadoRepository.findByCpf(cpfFormatado);
 
             ObjectMapper mapper = new ObjectMapper();

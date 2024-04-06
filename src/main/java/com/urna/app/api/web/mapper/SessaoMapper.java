@@ -1,7 +1,7 @@
 package com.urna.app.api.web.mapper;
 
 import com.urna.app.api.persistence.entity.SessaoEntity;
-import com.urna.app.api.service.model.Sessao;
+import com.urna.app.api.service.dto.Sessao;
 
 import java.util.Collection;
 import java.util.stream.Collectors;

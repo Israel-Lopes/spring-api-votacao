@@ -1,8 +1,7 @@
 package com.urna.app.api.web.controller;
 
 import com.urna.app.api.service.VotacaoImpl;
-import com.urna.app.api.service.model.IdSessao;
-import com.urna.app.api.service.model.VotoAssociado;
+import com.urna.app.api.service.dto.VotoAssociado;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

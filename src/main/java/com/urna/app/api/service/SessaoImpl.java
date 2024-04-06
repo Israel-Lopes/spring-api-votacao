@@ -3,7 +3,7 @@ package com.urna.app.api.service;
 import com.urna.app.api.persistence.entity.SessaoEntity;
 import com.urna.app.api.repository.SessaoRepository;
 import com.urna.app.api.service.in.ISessao;
-import com.urna.app.api.service.model.Sessao;
+import com.urna.app.api.service.dto.Sessao;
 import com.urna.app.api.utils.Voto;
 import com.urna.app.api.web.mapper.SessaoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,6 @@ import java.util.Optional;
 public class SessaoImpl implements ISessao {
     @Autowired(required = true)
     private SessaoRepository repository;
-    @Override
     public ResponseEntity getSessao(HttpServletRequest request, Long id) {
         try {
             Optional<SessaoEntity> entity = repository.findById(id);
@@ -34,7 +33,6 @@ public class SessaoImpl implements ISessao {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-    @Override
     public ResponseEntity<List<Sessao>> getSessaoList(HttpServletRequest request) {
         try {
             List<SessaoEntity> entities = repository.findAll();
@@ -46,7 +44,6 @@ public class SessaoImpl implements ISessao {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-    @Override
     public ResponseEntity createSessao(Sessao model) {
         try {
             model.setVotacaoEmAndamento(false);
@@ -66,10 +63,9 @@ public class SessaoImpl implements ISessao {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-    @Override
-    public ResponseEntity patchAtivaSessao(Long id, Sessao model) {
+    public ResponseEntity patchAtivaSessao(Sessao model) {
         try {
-            Optional<SessaoEntity> optionalEntity = repository.findById(id);
+            Optional<SessaoEntity> optionalEntity = repository.findById(model.getId());
             SessaoEntity entity = optionalEntity.get();
 
             if (optionalEntity.isPresent() && entity.getVotacaoEmAndamento() == false) {
