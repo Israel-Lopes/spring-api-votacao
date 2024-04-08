@@ -52,11 +52,15 @@ public class AssociadoImpl implements IAssociado {
             String cpfFormatado = formatarCpf.replace(model.getCpf());
             model.setCpf(cpfFormatado);
             AssociadoEntity entity = repository.save(AssociadoMapper.marshall(model));
-            return entity != null
-                    ? ResponseEntity.ok().header("Content-Type", "application/json")
-                    .body(AssociadoMapper.unmarshall(entity))
-                    : ResponseEntity.notFound().build();
+            if (entity != null) {
+                logger.info("Associado criado com sucesso! ID: {}", entity.getId());
+                return ResponseEntity.ok().header("Content-Type", "application/json")
+                        .body(AssociadoMapper.unmarshall(entity));
+            }
+            logger.error("Erro ao criar associado: entidade retornada é nula");
+            return ResponseEntity.notFound().build();
         } catch (Exception e) {
+            logger.error("Erro ao criar associado: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }

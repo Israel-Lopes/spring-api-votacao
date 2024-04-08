@@ -1,5 +1,6 @@
 package com.urna.app.api.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.urna.app.api.service.in.IVotacao;
@@ -25,7 +26,7 @@ import java.util.Optional;
 
 @Service
 public class VotacaoImpl implements IVotacao {
-    private static final String cpfValido = "ABLE_TO_VOTE";
+    private static final String CPF_VALIDO = "ABLE_TO_VOTE";
     @Autowired(required = true)
     private AssociadoRepository associadoRepository;
     @Autowired(required = true)
@@ -38,18 +39,11 @@ public class VotacaoImpl implements IVotacao {
             String cpfFormatado = formatarCpf.replace(model.getCpf());
             AssociadoEntity entity = associadoRepository.findByCpf(cpfFormatado);
 
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode validaCpfNode = mapper.readTree(client.getValidaCPF(cpfFormatado));
-
-            ValidaCPF validaCPF = new ValidaCPF();
-            validaCPF.setStatus(validaCpfNode.get("status").textValue());
-
-            if (validaCPF.getStatus().equals(cpfValido) || entity == null) {
+            if (entity == null || validaCPF(cpfFormatado)) {
                 return ResponseEntity.notFound().build();
             }
 
             Optional<SessaoEntity> sessaoOptional = sessaoRepository.findById(model.getIdSessao());
-
             if (sessaoOptional.isEmpty()) {
                 return ResponseEntity.notFound().build();
             }
@@ -100,9 +94,17 @@ public class VotacaoImpl implements IVotacao {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+    private Boolean validaCPF(String cpfFormatado) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode validaCpfNode = mapper.readTree(client.getValidaCPF(cpfFormatado));
+
+        ValidaCPF validaCPF = new ValidaCPF();
+        validaCPF.setStatus(validaCpfNode.get("status").textValue());
+        return validaCPF.getStatus().equals(CPF_VALIDO);
+    }
     private String contarVotos(List<Voto> votos) {
-        int simCount = 0;
-        int naoCount = 0;
+        Integer simCount = 0;
+        Integer naoCount = 0;
 
         for (Voto voto : votos) {
             if (voto == Voto.SIM) {
