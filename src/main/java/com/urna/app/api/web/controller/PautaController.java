@@ -1,7 +1,7 @@
 package com.urna.app.api.web.controller;
 
 import com.urna.app.api.service.PautaImpl;
-import com.urna.app.api.service.dto.Pauta;
+import com.urna.app.api.web.dto.Pauta;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

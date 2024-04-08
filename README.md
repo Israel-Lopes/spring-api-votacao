@@ -1,6 +1,6 @@
 # Aplicação de votação
 
-Para inicar aplicação via docker basta seguir os passos abaixo:
+Para iniciar aplicação via docker basta seguir os passos abaixo:
 
 1. Executar build: ``sudo docker build -t <nome-da-imagem> .``
 2. Iniciar o container: ``sudo docker run -p 8080:8080 -p 9090:9090 <nome-da-imagem>``
@@ -15,8 +15,7 @@ Segue abaixo a sequencia correta:
 4. associado votar
 5. Contabilizar votos
 
-
-### Fluxo correto
+### Fluxo da Chamada
 
 1. Criar associado
 ```shell

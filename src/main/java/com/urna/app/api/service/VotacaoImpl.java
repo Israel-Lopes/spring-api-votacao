@@ -3,9 +3,10 @@ package com.urna.app.api.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.urna.app.api.web.dto.Associado;
 import com.urna.app.api.service.in.IVotacao;
-import com.urna.app.api.service.dto.TotalVotos;
-import com.urna.app.api.service.dto.VotoAssociado;
+import com.urna.app.api.web.dto.TotalVotos;
+import com.urna.app.api.web.dto.VotoAssociado;
 import com.urna.app.api.utils.FormatarCpf;
 import com.urna.app.api.utils.Voto;
 import com.urna.app.client.ValidaCPFClient;
@@ -15,6 +16,8 @@ import com.urna.app.api.persistence.entity.SessaoEntity;
 import com.urna.app.api.repository.AssociadoRepository;
 import com.urna.app.api.repository.SessaoRepository;
 import com.urna.app.api.web.mapper.SessaoMapper;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +37,7 @@ public class VotacaoImpl implements IVotacao {
     @Autowired(required=true)
     private ValidaCPFClient client;
     private FormatarCpf formatarCpf;
+    private static final Logger logger = LogManager.getLogger(Associado.class);
     public ResponseEntity createVoto(VotoAssociado model) {
         try {
             String cpfFormatado = formatarCpf.replace(model.getCpf());
@@ -105,7 +109,6 @@ public class VotacaoImpl implements IVotacao {
     private String contarVotos(List<Voto> votos) {
         Integer simCount = 0;
         Integer naoCount = 0;
-
         for (Voto voto : votos) {
             if (voto == Voto.SIM) {
                 simCount++;

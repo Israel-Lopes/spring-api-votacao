@@ -1,7 +1,7 @@
 package com.urna.app.api.web.mapper;
 
 import com.urna.app.api.persistence.entity.AssociadoEntity;
-import com.urna.app.api.service.dto.Associado;
+import com.urna.app.api.web.dto.Associado;
 
 import java.util.Collection;
 import java.util.stream.Collectors;

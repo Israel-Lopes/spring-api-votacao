@@ -1,17 +1,19 @@
-package com.urna.app.api.service.dto;
+package com.urna.app.api.web.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.urna.app.api.utils.Voto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Data
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class Associado {
-    private Long Id;
-    private String cpf;
+public class TotalVotos {
+    private List<Voto> votos;
 }

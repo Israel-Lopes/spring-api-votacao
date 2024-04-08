@@ -1,6 +1,6 @@
 package com.urna.app.api.service.in;
 
-import com.urna.app.api.service.dto.Sessao;
+import com.urna.app.api.web.dto.Sessao;
 import org.springframework.http.ResponseEntity;
 
 import javax.servlet.http.HttpServletRequest;

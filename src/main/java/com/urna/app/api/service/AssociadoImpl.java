@@ -3,7 +3,7 @@ package com.urna.app.api.service;
 import com.urna.app.api.persistence.entity.AssociadoEntity;
 import com.urna.app.api.repository.AssociadoRepository;
 import com.urna.app.api.service.in.IAssociado;
-import com.urna.app.api.service.dto.Associado;
+import com.urna.app.api.web.dto.Associado;
 import com.urna.app.api.utils.FormatarCpf;
 import com.urna.app.api.web.mapper.AssociadoMapper;
 import org.apache.logging.log4j.LogManager;

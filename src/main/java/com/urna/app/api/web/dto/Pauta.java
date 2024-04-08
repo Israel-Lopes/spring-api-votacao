@@ -1,4 +1,4 @@
-package com.urna.app.api.service.dto;
+package com.urna.app.api.web.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class IdSessao {
-    private Long idSessao;
+public class Pauta {
+    private Long Id;
+    private String titulo;
+    private String descricao;
 }

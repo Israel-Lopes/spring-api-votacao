@@ -1,4 +1,4 @@
-package com.urna.app.api.service.dto;
+package com.urna.app.api.web.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.urna.app.api.utils.Voto;

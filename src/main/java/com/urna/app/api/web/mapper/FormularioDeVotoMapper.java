@@ -1,7 +1,7 @@
 package com.urna.app.api.web.mapper;
 
 import com.urna.app.api.persistence.entity.FormularioDeVotoEntity;
-import com.urna.app.api.service.dto.FormularioDeVoto;
+import com.urna.app.api.web.dto.FormularioDeVoto;
 
 import java.util.Collection;
 import java.util.stream.Collectors;

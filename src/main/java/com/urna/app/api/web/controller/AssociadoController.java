@@ -1,7 +1,7 @@
 package com.urna.app.api.web.controller;
 
 import com.urna.app.api.service.AssociadoImpl;
-import com.urna.app.api.service.dto.Associado;
+import com.urna.app.api.web.dto.Associado;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;

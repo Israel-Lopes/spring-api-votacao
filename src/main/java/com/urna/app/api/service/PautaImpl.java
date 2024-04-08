@@ -2,9 +2,9 @@ package com.urna.app.api.service;
 
 import com.urna.app.api.persistence.entity.PautaEntity;
 import com.urna.app.api.repository.PautaRepository;
-import com.urna.app.api.service.dto.Associado;
+import com.urna.app.api.web.dto.Associado;
 import com.urna.app.api.service.in.IPauta;
-import com.urna.app.api.service.dto.Pauta;
+import com.urna.app.api.web.dto.Pauta;
 import com.urna.app.api.web.mapper.PautaMapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

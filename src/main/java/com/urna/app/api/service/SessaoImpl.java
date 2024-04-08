@@ -2,9 +2,9 @@ package com.urna.app.api.service;
 
 import com.urna.app.api.persistence.entity.SessaoEntity;
 import com.urna.app.api.repository.SessaoRepository;
-import com.urna.app.api.service.dto.Associado;
+import com.urna.app.api.web.dto.Associado;
 import com.urna.app.api.service.in.ISessao;
-import com.urna.app.api.service.dto.Sessao;
+import com.urna.app.api.web.dto.Sessao;
 import com.urna.app.api.utils.Voto;
 import com.urna.app.api.web.mapper.SessaoMapper;
 import org.apache.logging.log4j.LogManager;
