@@ -3,19 +3,19 @@ package com.urna.app.api.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.urna.app.api.web.dto.Associado;
-import com.urna.app.api.service.in.IVotacao;
-import com.urna.app.api.web.dto.TotalVotos;
-import com.urna.app.api.web.dto.VotoAssociado;
-import com.urna.app.api.utils.FormatarCpf;
-import com.urna.app.api.utils.Voto;
-import com.urna.app.client.ValidaCPFClient;
-import com.urna.app.client.model.ValidaCPF;
 import com.urna.app.api.persistence.entity.AssociadoEntity;
 import com.urna.app.api.persistence.entity.SessaoEntity;
 import com.urna.app.api.repository.AssociadoRepository;
 import com.urna.app.api.repository.SessaoRepository;
+import com.urna.app.api.service.in.IVotacao;
+import com.urna.app.api.utils.FormatarCpf;
+import com.urna.app.api.utils.Voto;
+import com.urna.app.api.web.dto.Associado;
+import com.urna.app.api.web.dto.TotalVotos;
+import com.urna.app.api.web.dto.VotoAssociado;
 import com.urna.app.api.web.mapper.SessaoMapper;
+import com.urna.app.client.ValidaCPFClient;
+import com.urna.app.client.model.ValidaCPF;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +36,7 @@ public class VotacaoImpl implements IVotacao {
     private SessaoRepository sessaoRepository;
     @Autowired(required=true)
     private ValidaCPFClient client;
+    @Autowired
     private FormatarCpf formatarCpf;
     private static final Logger logger = LogManager.getLogger(Associado.class);
     public ResponseEntity createVoto(VotoAssociado model) {
@@ -43,7 +44,7 @@ public class VotacaoImpl implements IVotacao {
             String cpfFormatado = formatarCpf.replace(model.getCpf());
             AssociadoEntity entity = associadoRepository.findByCpf(cpfFormatado);
 
-            if (entity == null || validaCPF(cpfFormatado)) {
+            if (entity == null || !validaCPF(cpfFormatado)) {
                 logger.error("Erro ao validar entidade ou CPF!");
                 return ResponseEntity.notFound().build();
             }
@@ -55,9 +56,9 @@ public class VotacaoImpl implements IVotacao {
             }
 
             LocalDateTime dataAtual = LocalDateTime.now();
-            if (!sessaoOptional.get().getFimDaContagem().isBefore(dataAtual)) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body("A votação para esta sessão foi encerrada.");
+            if (!sessaoOptional.get().getFimDaContagem().isAfter(dataAtual)) {
+                logger.info("Nao é possivel votar. Sessao encerrada.");
+                return ResponseEntity.notFound().build();
             }
 
             List<Long> idDeAssociadosQueJaVotaram = sessaoRepository.getById(sessaoOptional
@@ -67,10 +68,10 @@ public class VotacaoImpl implements IVotacao {
             Boolean associadoJaVotou = idDeAssociadosQueJaVotaram.stream()
                     .anyMatch(id -> id.equals(entity.getId()));
 
-            if (associadoJaVotou) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body("Voto não computado! Associado ja votou antes!");
-            }
+//            if (associadoJaVotou) {
+//                logger.info("Nao é possivel votar. Associado ja votou anteriormente.");
+//                return ResponseEntity.notFound().build();
+//            }
 
             SessaoEntity sessaoEntity = sessaoOptional.get();
 
@@ -100,7 +101,7 @@ public class VotacaoImpl implements IVotacao {
             TotalVotos listTotalVotos = new TotalVotos();
             listTotalVotos.setVotos(sessaoOptional.get().getFormulario().getVotos());
             String total = contarVotos(listTotalVotos.getVotos());
-            if (total.isEmpty()) {
+            if (total != null) {
                 logger.info("Sucesso na contagem de votos!");
                 return ResponseEntity.ok().header("Content-Type", "application/json")
                         .body(total);

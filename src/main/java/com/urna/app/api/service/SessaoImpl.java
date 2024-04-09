@@ -62,7 +62,7 @@ public class SessaoImpl implements ISessao {
             SessaoEntity entity = repository.save(SessaoMapper.marshall(model));
             if (entity != null && entity.getFormulario() != null) {
                 logger.info("Sessao criada com sucesso! ID: {}", SessaoMapper.unmarshall(entity).getId());
-                ResponseEntity.ok().header("Content-Type", "application/json")
+                return ResponseEntity.ok().header("Content-Type", "application/json")
                         .body(SessaoMapper.unmarshall(entity));
             }
             return ResponseEntity.notFound().build();

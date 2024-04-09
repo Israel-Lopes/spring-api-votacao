@@ -23,8 +23,9 @@ import java.util.Optional;
 public class AssociadoImpl implements IAssociado {
     @Autowired(required = true)
     private AssociadoRepository repository;
-    private static final Logger logger = LogManager.getLogger(Associado.class);
+    @Autowired
     private FormatarCpf formatarCpf;
+    private static final Logger logger = LogManager.getLogger(Associado.class);
     public ResponseEntity getAssociado(HttpServletRequest request, Long id) {
         try {
             Optional<AssociadoEntity> entity = repository.findById(id);
