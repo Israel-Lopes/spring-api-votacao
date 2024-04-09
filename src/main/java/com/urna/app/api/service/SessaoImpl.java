@@ -55,15 +55,19 @@ public class SessaoImpl implements ISessao {
             List<Long> idAssociados = model.getFormulario().getIdAssociadosQueVotaram();
             List<Voto> votos = model.getFormulario().getVotos();
             if (idAssociados == null || votos == null) {
+                logger.error("Erro ao criar Sessao: ID ou votos nulos");
                 return ResponseEntity.notFound().build();
             }
 
             SessaoEntity entity = repository.save(SessaoMapper.marshall(model));
-            return entity != null && entity.getFormulario() != null
-                    ? ResponseEntity.ok().header("Content-Type", "application/json")
-                        .body(SessaoMapper.unmarshall(entity))
-                    : ResponseEntity.notFound().build();
+            if (entity != null && entity.getFormulario() != null) {
+                logger.info("Sessao criada com sucesso! ID: {}", SessaoMapper.unmarshall(entity).getId());
+                ResponseEntity.ok().header("Content-Type", "application/json")
+                        .body(SessaoMapper.unmarshall(entity));
+            }
+            return ResponseEntity.notFound().build();
         } catch (Exception e) {
+            logger.error("Erro ao criar Sessao: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
@@ -85,14 +89,18 @@ public class SessaoImpl implements ISessao {
                 entity.setInicioDaContagem(inicioDaContagem);
                 entity.setFimDaContagem(fimDaContagem);
 
-                repository.save(entity);
-                return ResponseEntity.ok()
-                        .header("Content-Type", "application/json")
-                        .body(SessaoMapper.unmarshall(entity));
-            } else {
-                return ResponseEntity.notFound().build();
+                SessaoEntity saved = repository.save(entity);
+                if (saved != null) {
+                    logger.info("Sessao de votos iniciada com sucesso! ID: {}"
+                            , SessaoMapper.unmarshall(entity).getId());
+                    return ResponseEntity.ok()
+                            .header("Content-Type", "application/json")
+                            .body(SessaoMapper.unmarshall(entity));
+                }
             }
+            return ResponseEntity.notFound().build();
         } catch (Exception e) {
+            logger.error("Erro ao inicializar sessao de votos: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }

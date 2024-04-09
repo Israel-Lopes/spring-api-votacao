@@ -54,10 +54,10 @@ public class PautaImpl implements IPauta {
                 return ResponseEntity.ok().header("Content-Type", "application/json")
                         .body(PautaMapper.unmarshall(entity));
             }
-            logger.error("Erro ao criar pauta: entidade retornada e nula");
+            logger.error("Erro ao criar Pauta: entidade retornada e nula");
             return ResponseEntity.notFound().build();
         } catch (Exception e) {
-            logger.error("Erro ao criar pauta: {}", e.getMessage());
+            logger.error("Erro ao criar Pauta: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }

@@ -44,11 +44,13 @@ public class VotacaoImpl implements IVotacao {
             AssociadoEntity entity = associadoRepository.findByCpf(cpfFormatado);
 
             if (entity == null || validaCPF(cpfFormatado)) {
+                logger.error("Erro ao validar entidade ou CPF!");
                 return ResponseEntity.notFound().build();
             }
 
             Optional<SessaoEntity> sessaoOptional = sessaoRepository.findById(model.getIdSessao());
             if (sessaoOptional.isEmpty()) {
+                logger.error("Erro ao encontrar sessao!");
                 return ResponseEntity.notFound().build();
             }
 
@@ -67,18 +69,23 @@ public class VotacaoImpl implements IVotacao {
 
             if (associadoJaVotou) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body("Voto não computado! Associado ja vou antes!");
+                        .body("Voto não computado! Associado ja votou antes!");
             }
 
             SessaoEntity sessaoEntity = sessaoOptional.get();
 
             sessaoEntity.getFormulario().getVotos().add(model.getVoto());
             sessaoEntity.getFormulario().getIdAssociadosQueVotaram().add(entity.getId());
-            sessaoRepository.save(sessaoEntity);
-
-            return ResponseEntity.ok().header("Content-Type", "application/json")
-                    .body(SessaoMapper.unmarshall(sessaoEntity));
+            SessaoEntity saved = sessaoRepository.save(sessaoEntity);
+            if (saved != null) {
+                logger.info("Voto computado com sucesso! ID: {}", SessaoMapper.unmarshall(sessaoEntity).getId());
+                return ResponseEntity.ok().header("Content-Type", "application/json")
+                        .body(SessaoMapper.unmarshall(sessaoEntity));
+            }
+            logger.info("Voto nao foi computado!");
+            return ResponseEntity.notFound().build();
         } catch (Exception e) {
+            logger.error("Erro ao computadar voto: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
@@ -87,14 +94,21 @@ public class VotacaoImpl implements IVotacao {
             Optional<SessaoEntity> sessaoOptional = sessaoRepository.findById(idSessao);
 
             if (sessaoOptional.isEmpty()) {
+                logger.info("Erro, sessao vazia!");
                 return ResponseEntity.notFound().build();
             }
             TotalVotos listTotalVotos = new TotalVotos();
             listTotalVotos.setVotos(sessaoOptional.get().getFormulario().getVotos());
             String total = contarVotos(listTotalVotos.getVotos());
-            return ResponseEntity.ok().header("Content-Type", "application/json")
-                    .body(total);
+            if (total.isEmpty()) {
+                logger.info("Sucesso na contagem de votos!");
+                return ResponseEntity.ok().header("Content-Type", "application/json")
+                        .body(total);
+            }
+            logger.error("Erro ao contabilizar todos os votos!");
+            return ResponseEntity.notFound().build();
         } catch (Exception e) {
+            logger.error("Erro ao contabilizar todos os votos: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
