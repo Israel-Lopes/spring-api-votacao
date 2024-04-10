@@ -1,7 +1,7 @@
 package com.urna.app.api.web.mapper;
 
 import com.urna.app.api.persistence.entity.PautaEntity;
-import com.urna.app.api.service.model.Pauta;
+import com.urna.app.api.web.dto.Pauta;
 
 import java.util.Collection;
 import java.util.stream.Collectors;

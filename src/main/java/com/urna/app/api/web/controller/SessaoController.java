@@ -1,7 +1,7 @@
 package com.urna.app.api.web.controller;
 
 import com.urna.app.api.service.SessaoImpl;
-import com.urna.app.api.service.model.Sessao;
+import com.urna.app.api.web.dto.Sessao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,9 +31,9 @@ public class SessaoController {
     public ResponseEntity createSessao(@RequestBody Sessao model) throws Exception {
         return service.createSessao(model);
     }
-    @PatchMapping("/{id}")
+    @PatchMapping
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public ResponseEntity patchSessao(@RequestBody Sessao model, @PathVariable Long id) throws Exception {
-        return service.patchAtivaSessao(id, model);
+    public ResponseEntity patchSessao(@RequestBody Sessao model) throws Exception {
+        return service.patchAtivaSessao(model);
     }
 }

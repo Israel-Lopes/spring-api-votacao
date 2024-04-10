@@ -3,7 +3,8 @@ package com.urna.app.api.service;
 import com.urna.app.api.persistence.entity.AssociadoEntity;
 import com.urna.app.api.repository.AssociadoRepository;
 import com.urna.app.api.service.in.IAssociado;
-import com.urna.app.api.service.model.Associado;
+import com.urna.app.api.web.dto.Associado;
+import com.urna.app.api.utils.FormatarCpf;
 import com.urna.app.api.web.mapper.AssociadoMapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,6 +23,8 @@ import java.util.Optional;
 public class AssociadoImpl implements IAssociado {
     @Autowired(required = true)
     private AssociadoRepository repository;
+    @Autowired
+    private FormatarCpf formatarCpf;
     private static final Logger logger = LogManager.getLogger(Associado.class);
     public ResponseEntity getAssociado(HttpServletRequest request, Long id) {
         try {
@@ -47,44 +50,18 @@ public class AssociadoImpl implements IAssociado {
     }
     public ResponseEntity createAssociado(@RequestBody Associado model) {
         try {
-            String cpfFormatado = model.getCpf()
-                    .replace(" ", "")
-                    .replace("-", "")
-                    .replace(".", "");
+            String cpfFormatado = formatarCpf.replace(model.getCpf());
             model.setCpf(cpfFormatado);
             AssociadoEntity entity = repository.save(AssociadoMapper.marshall(model));
-            return entity != null
-                    ? ResponseEntity.ok().header("Content-Type", "application/json")
-                    .body(AssociadoMapper.unmarshall(entity))
-                    : ResponseEntity.notFound().build();
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
-    public ResponseEntity updateAssociado(Associado model) {
-        try {
-            Optional<AssociadoEntity> optionalEntity = repository.findById(model.getId());
-            if (optionalEntity.isPresent()) {
-                AssociadoEntity entity = optionalEntity.get();
-                entity.setCpf(model.getCpf());
-                repository.save(entity);
-                return ResponseEntity.ok()
-                        .header("Content-Type", "application/json")
+            if (entity != null) {
+                logger.info("Associado criado com sucesso! ID: {}", entity.getId());
+                return ResponseEntity.ok().header("Content-Type", "application/json")
                         .body(AssociadoMapper.unmarshall(entity));
-            } else {
-                return ResponseEntity.notFound().build();
             }
+            logger.error("Erro ao criar associado: entidade retornada é nula");
+            return ResponseEntity.notFound().build();
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
-    public ResponseEntity deleteAssociado(Long id) {
-        try {
-            return repository.findById(id).map(record -> {
-                repository.deleteById(id);
-                return ResponseEntity.ok().header("Content-Type", "application/json").body(id);
-            }).orElse(ResponseEntity.notFound().build());
-        } catch (Exception e) {
+            logger.error("Erro ao criar associado: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }

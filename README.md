@@ -1,6 +1,6 @@
 # Aplicação de votação
 
-Para inicar aplicação via docker basta seguir os passos abaixo:
+Para iniciar aplicação via docker basta seguir os passos abaixo:
 
 1. Executar build: ``sudo docker build -t <nome-da-imagem> .``
 2. Iniciar o container: ``sudo docker run -p 8080:8080 -p 9090:9090 <nome-da-imagem>``
@@ -15,8 +15,7 @@ Segue abaixo a sequencia correta:
 4. associado votar
 5. Contabilizar votos
 
-
-### Fluxo correto
+### Fluxo da Chamada
 
 1. Criar associado
 ```shell
@@ -29,7 +28,7 @@ curl -X POST -H "Content-Type: application/json" -d '{
 
 ```shell
 curl -X POST -H "Content-Type: application/json" -d '{
-  "tempoDaVotacao": "08:00:00",
+  "tempoDaVotacao": "00:08:00",
   "votacaoEmAndamento": false,
   "inicioDaContagem": null,
   "fimDaContagem": null,
@@ -48,8 +47,9 @@ curl -X POST -H "Content-Type: application/json" -d '{
 
 ```shell
 curl -X PATCH -H "Content-Type: application/json" -d '{
+  "id": 1,
   "votacaoEmAndamento": true
-}' http://localhost:8080/sessao/1
+}' http://localhost:8080/sessao/
 ```
 
 4. Computar voto na sessao
@@ -57,7 +57,7 @@ curl -X PATCH -H "Content-Type: application/json" -d '{
 ```shell
 curl -X POST -H "Content-Type: application/json" -d '{
   "cpf": "98765432109",
-  "voto": "SIM",
+  "voto": "SIM" || "NAO",
   "idSessao": 1
 }' http://localhost:8080/votacao
 ```
@@ -66,5 +66,5 @@ curl -X POST -H "Content-Type: application/json" -d '{
 
 ```shell
 curl -X GET -H "Content-Type: application/json" -d '{
-}' http://localhost:8080/votacao/total/1
+}' http://localhost:8080/votacao/total/{id_sessao}
 ```
