@@ -21,7 +21,7 @@ Segue abaixo a sequencia correta:
 ```shell
 curl -X POST -H "Content-Type: application/json" -d '{
   "cpf": "98765432109"
-}' http://localhost:8080/associado
+}' http://localhost:8080/api/v1/associado
 ```
 
 2. Criando a sessao de votacao/pauta
@@ -40,7 +40,7 @@ curl -X POST -H "Content-Type: application/json" -d '{
     "titulo": "Pauta sobre vacinas",
     "descricao": "vacinacao de bebes"
   }
-}' http://localhost:8080/sessao
+}' http://localhost:8080/api/v1/sessao
 ```
 
 3. Iniciar sessao para votos
@@ -49,7 +49,7 @@ curl -X POST -H "Content-Type: application/json" -d '{
 curl -X PATCH -H "Content-Type: application/json" -d '{
   "id": 1,
   "votacaoEmAndamento": true
-}' http://localhost:8080/sessao/
+}' http://localhost:8080/api/v1/sessao/
 ```
 
 4. Computar voto na sessao
@@ -59,12 +59,12 @@ curl -X POST -H "Content-Type: application/json" -d '{
   "cpf": "98765432109",
   "voto": "SIM" || "NAO",
   "idSessao": 1
-}' http://localhost:8080/votacao
+}' http://localhost:8080/api/v1/votacao
 ```
 
 5. Contabilizar votos da sessao
 
 ```shell
 curl -X GET -H "Content-Type: application/json" -d '{
-}' http://localhost:8080/votacao/total/{id_sessao}
+}' http://localhost:8080/api/v1/votacao/total/{id_sessao}
 ```
